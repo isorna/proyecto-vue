@@ -13,8 +13,7 @@
     let onFormSubmitEvent
     if (loginData.email !== '' && loginData.password !== '') {
       const payload = JSON.stringify(loginData)
-      // let apiData = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/login`, 'POST', payload)
-      let apiData = await getAPIData(`https://neoland-isorna.netlify.app/api/login`, 'POST', payload)
+      let apiData = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/login`, 'POST', payload)
       if (!apiData) {
         apiData = {
           detail: {
