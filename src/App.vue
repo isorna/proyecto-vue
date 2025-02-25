@@ -2,10 +2,9 @@
 import { RouterLink, RouterView } from 'vue-router'
 import HelloWorld from './components/HelloWorld.vue'
 
-
-window.addEventListener('login-form-submit', (event) => {
-  console.log('login-form-submit', /** @type {CustomEvent} */(event).detail)
-})
+function onLoginFormSubmit(eventDetail) {
+  console.log('login-form-submit', eventDetail)
+}
 </script>
 
 <template>
@@ -22,8 +21,7 @@ window.addEventListener('login-form-submit', (event) => {
       </nav>
     </div>
   </header>
-
-  <RouterView />
+  <RouterView @login-form-submit="onLoginFormSubmit" />
 </template>
 
 <style scoped>

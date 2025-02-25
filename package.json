@@ -5,7 +5,6 @@
   "type": "module",
   "scripts": {
     "server:express:start": "node --env-file=.env --watch server/server.express.js",
-    "server:statics:start": "node --env-file=.env --watch server/server.statics.js",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",

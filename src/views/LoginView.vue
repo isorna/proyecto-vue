@@ -1,8 +1,13 @@
 <script setup>
-  import { ref } from 'vue'
+  import { ref, computed, onMounted  } from 'vue'
   import { getAPIData, API_PORT } from '@/utils/apis.js'
+  import { useCounterStore } from '@/stores/counter'
   const email = ref('')
   const password = ref('')
+  const isDisabled = computed(() => email.value === '' || password.value === '')
+  const props = defineProps(['fecha'])
+  const emit = defineEmits(['login-form-submit'])
+  const store = useCounterStore()
 
   async function onFormSubmit(e) {
     console.log('submit', e)
@@ -10,7 +15,7 @@
       email: email.value,
       password: password.value
     }
-    let onFormSubmitEvent
+    let eventDetail
     if (loginData.email !== '' && loginData.password !== '') {
       const payload = JSON.stringify(loginData)
       let apiData = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/login`, 'POST', payload)
@@ -21,28 +26,34 @@
           }
         }
       }
-      onFormSubmitEvent = new CustomEvent("login-form-submit", {
-        bubbles: true,
-        detail: apiData
-      })
+      eventDetail = apiData
     } else {
-      onFormSubmitEvent = new CustomEvent("login-form-submit", {
-        bubbles: true,
-        detail: {
-          text: 'No he encontrado el usuario o la contraseña'
-        }
-      })
+      eventDetail = {
+        text: 'No he encontrado el usuario o la contraseña'
+      }
     }
-
-    window.dispatchEvent(onFormSubmitEvent);
+    emit('login-form-submit', eventDetail)
   }
+
+  function onButtonClick() {
+    store.increment()
+  }
+
+  onMounted(() => {
+    console.log(`the component is now mounted.`)
+  })
 </script>
 
 <template>
+  <h1>Login ({{ props.fecha }}) {{ store.count }}</h1>
   <form id="loginForm" @submit.prevent="onFormSubmit">
-    <label>Usuario: <input type="text" id="email" placeholder="email" v-model="email" /></label>
-    <label>Contraseña: <input type="password" id="password" placeholder="contraseña" v-model="password" /></label>
-    <button type="submit" id="loginButton" title="Login" :disabled="email === '' || password === ''">Login</button>
+    <label>Usuario: <input type="text" id="email" placeholder="email"
+      v-model="email"
+      :class="{ 'error': email === '' }" /></label>
+    <label>Contraseña: <input type="password" id="password" placeholder="contraseña"
+      v-model="password"
+      :class="{ 'error': password === '' }" /></label>
+    <button type="submit" id="loginButton" title="Login" :disabled="isDisabled" @click="onButtonClick">Login</button>
   </form>
 </template>
 
@@ -68,6 +79,10 @@ form {
       line-height: 40px;
       font-size: 24px;
       flex-grow: 1;
+
+      &.error {
+        border-color: red;
+      }
 
       &[type="number"] {
         text-align: right;
