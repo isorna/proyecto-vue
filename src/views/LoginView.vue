@@ -42,6 +42,10 @@
   onMounted(() => {
     console.log(`the component is now mounted.`)
   })
+
+  defineExpose({
+    onButtonClick
+  })
 </script>
 
 <template>

@@ -1,15 +1,24 @@
 <script setup>
+import { useTemplateRef } from 'vue'
 import { RouterLink, RouterView } from 'vue-router'
 import HelloWorld from './components/HelloWorld.vue'
 
+const formulario = useTemplateRef('mainContent')
+
 function onLoginFormSubmit(eventDetail) {
   console.log('login-form-submit', eventDetail)
+}
+
+function testClick() {
+  console.log(formulario.value)
+  formulario.value.onButtonClick()
 }
 </script>
 
 <template>
   <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
+    <img @click="testClick"
+      alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
 
     <div class="wrapper">
       <HelloWorld msg="You did it!" />
@@ -21,7 +30,10 @@ function onLoginFormSubmit(eventDetail) {
       </nav>
     </div>
   </header>
-  <RouterView @login-form-submit="onLoginFormSubmit" />
+  <!-- <RouterView @login-form-submit="onLoginFormSubmit" /> -->
+  <router-view v-slot="{ Component }">
+    <component :is="Component" ref="mainContent" @login-form-submit="onLoginFormSubmit" />
+  </router-view>
 </template>
 
 <style scoped>
